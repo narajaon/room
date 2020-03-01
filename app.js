@@ -1,20 +1,15 @@
-const express = require('express');
+const next = require('next');
+const Server = require('./instances/Server');
 
-const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const dev = process.env.NODE_ENV !== 'production';
 
-const PORT = process.env.PORT || 3000;
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-app.get('/', (req, res) => {
-  console.log('user arrived in /');
-  res.status(200).sendFile(`${__dirname}/index.html`);
-});
+app.prepare().then(() => {
+  const server = new Server(handle);
 
-io.on('connection', () => {
-  console.log('SOCKET: USER CONNECTED');
-});
-
-http.listen(PORT, () => {
-  console.log(`server is ${PORT} up`);
+  server.setup();
+}).catch((err) => {
+  console.log(err);
 });

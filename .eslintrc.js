@@ -1,9 +1,16 @@
 const warnOnDev = process.env.NODE_ENV === 'production' ? 'error' : 'off';
 
 module.exports = {
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parser": "babel-eslint",
   extends: [
     "airbnb-base",
     "eslint:recommended",
+    "plugin:react/recommended"
   ],
   "env": {
     "browser": true,
