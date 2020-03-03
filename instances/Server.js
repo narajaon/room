@@ -1,27 +1,25 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-
-const Socket = require('./Socket');
+const express = require('express');
+const config = require('../config.json');
 
 const PORT = process.env.NODE_ENV || 3000;
 
 class Server {
-  constructor(serverHandler) {
-    this.instance = createServer((req, res) => {
-      const parsedUrl = parse(req.url, true);
-      serverHandler(req, res, parsedUrl);
-    });
-
-    this.io = new Socket(this.instance).instance;
-    this.lobbies = [];
+  constructor() {
+    this.instance = express();
   }
 
-  setup() {
-    this.io.on('connection', (socket) => {
-      console.log('IO: user connected');
-      socket.on('yay', () => {
-        console.log('yay server');
-      });
+  setup(serverHandler) {
+    this.instance.use(/\//, (req, res, next) => {
+      console.log(req.url);
+
+      req.api_url = config.api_url;
+      req.client_id = config.client_id;
+
+      next();
+    });
+
+    this.instance.get('*', (req, res) => {
+      serverHandler(req, res);
     });
 
     this.instance.listen(PORT, (err) => {
