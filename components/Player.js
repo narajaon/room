@@ -44,8 +44,12 @@ function Preview({ order = 0, isActive, cb }) {
   );
 }
 
+const clipList = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+
 function Player() {
   const [isActive, setIsActive] = useState(2);
+  const [start, setStart] = useState(0);
+  const [clips, setClips] = useState(clipList.slice(start, 5));
 
   const toggleState = (id) => () => {
     console.log(id);
@@ -55,11 +59,9 @@ function Player() {
 
   return (
     <Wrapper>
-      <Preview isActive={isActive === 0} cb={toggleState(0)} order={0}/>
-      <Preview isActive={isActive === 1} cb={toggleState(1)} order={1}/>
-      <Preview isActive={isActive === 2} cb={toggleState(2)} order={2}/>
-      <Preview isActive={isActive === 3} cb={toggleState(3)} order={1}/>
-      <Preview isActive={isActive === 4} cb={toggleState(4)} order={0}/>
+      {clips.map(
+        (id, i) => <Preview key={id} cb={toggleState(id)} order={i >= 2 ? clips.length - i : i}/>,
+      )}
     </Wrapper>
   );
 }
