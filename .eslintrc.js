@@ -18,6 +18,7 @@ module.exports = {
     "jest": true
   },
   "rules": {
+    "no-bitwise": ["error", { "allow": ["<<", "|"] }],
     "indent": [
       "warn",
       2
