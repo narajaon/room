@@ -10,8 +10,6 @@ class Server {
 
   setup(serverHandler) {
     this.instance.use(/\//, (req, res, next) => {
-      console.log(req.url);
-
       req.api_url = config.api_url;
       req.client_id = config.client_id;
 
