@@ -6,18 +6,33 @@ import { css } from 'styled-components';
 const elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const clipStyle = css`
+  transition: all 300ms cubic-bezier(0,0,0.32,1);
+  position: absolute;
+
   ${({
-    value, width, height,
-  }) => css`
-    background-color: ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
-    width: ${width}px;
-    height: ${height}px;
-  `}
+    value, width, height, padding, direction,
+  }) => {
+    const scale = 1 - (padding * 0.15);
+
+    return css`
+      border: 3px solid ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
+      z-index: ${2 - padding};
+      width: ${width}px;
+      height: ${height}px;
+      transform: translateX(${width * -direction * 0.25}px) scale(${scale}, ${scale});
+    `;
+  }
+}
 `;
 
 const flex = css`
   display: flex;
-  overflow: hidden;
+  border: 1px red solid;
+  position: relative;
+
+  ${({ width }) => css`
+    right: ${width / 2}px;
+  `}
 `;
 
 function slide(arr, direction, padding) {
@@ -30,79 +45,50 @@ function slide(arr, direction, padding) {
   return arr.slice(padding).concat(arr.slice(0, padding));
 }
 
-function applyTransition(el, width, padding) {
-  const transition = [
-    { transform: `translate3D(${width * padding}px, 0, 0)` },
-    { transform: 'translate3D(0, 0, 0)' },
-  ];
-
-  el.animate(transition, {
-    duration: 500,
-    easing: 'cubic-bezier(0,0,0.32,1)',
-  });
-}
-
 function Clip({
-  value, cb, width, height,
+  value, cb, width, height, padding, direction,
 }) {
   useEffect(() => () => {
     console.log('unmounted');
   }, []);
 
-  return <div value={value} width={width} height={height} onClick={cb} css={clipStyle}>{value}</div>;
+  return <div value={value} direction={direction} padding={padding} width={width} height={height} onClick={cb} css={clipStyle}>value: {value} padding: {padding}</div>;
 }
 
 function Player() {
+  const WIDTH = 600;
+  const HEIGHT = 300;
   const paddings = [2, 1, 0, 1, 2];
-  const WIDTH = 200;
-  const HEIGHT = 150;
 
   const [clips, setClips] = useState(elements.slice(0, 5));
-  const [direction, setDirection] = useState();
-  const [clicked, setClicked] = useState();
-  const indexOfClicked = clips.indexOf(clicked);
-  const [padding, setPadding] = useState(0);
   const ref = useRef();
 
-  const slideCB = (el) => () => {
-    setClicked(el);
-  };
+  const slideCB = (el, d, i) => ({ target }) => {
+    const indexOfClicked = clips.indexOf(el);
 
-  useEffect(() => {
-    if (clicked === undefined || indexOfClicked === 2) {
-      return;
-    }
+    console.log(WIDTH * d * 0.25);
+    console.table({ d, i });
 
+    if (indexOfClicked === 2) return;
+
+    let direction;
     if (indexOfClicked > 2) {
-      setDirection('left');
+      direction = 'left';
     } else if (indexOfClicked < 2) {
-      setDirection('right');
-    }
-
-    setPadding(paddings[indexOfClicked]);
-  }, [clicked]);
-
-  useEffect(() => {
-    if (clicked === undefined) {
-      return;
+      direction = 'right';
     }
 
     setClips((prev) => slide([...prev], direction, paddings[indexOfClicked]));
-  }, [direction, padding, indexOfClicked]);
-
-  useEffect(() => {
-    Array.prototype.forEach.call(ref.current.children, (el) => {
-      if (direction === 'left') {
-        applyTransition(el, WIDTH, padding);
-      } else if (direction === 'right') {
-        applyTransition(el, WIDTH, -padding);
-      }
-    });
-  }, [clicked, direction]);
+  };
 
   return (
-    <div css={flex} ref={ref} padding={padding}>
-      {clips.map((el, i) => <Clip key={el} value={el} width={WIDTH} height={HEIGHT} direction={direction} padding={padding} index={i} cb={slideCB(el)} />)}
+    <div css={css`
+      display: flex;
+      justify-content: center;
+    `}>
+      <div css={flex} ref={ref} height={HEIGHT} width={WIDTH}>
+        {clips.map((el, i) => <Clip key={el} value={el} width={WIDTH} height={HEIGHT} padding={paddings[i]} direction={2 - i} cb={slideCB(el, 2 - i, i)} />)}
+      </div>
     </div>
   );
 }
