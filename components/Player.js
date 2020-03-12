@@ -6,7 +6,6 @@ import { css } from 'styled-components';
 const elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const clipStyle = css`
-  transition: all 300ms cubic-bezier(0,0,0.32,1);
   position: absolute;
 
   ${({
