@@ -6,19 +6,18 @@ import { css } from 'styled-components';
 const elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const clipStyle = css`
-  transition: all 200ms linear;
-
   ${({
-    value, WIDTH, HEIGHT,
+    value, width, height,
   }) => css`
     background-color: ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
-    width: ${WIDTH}px;
-    height: ${HEIGHT}px;
+    width: ${width}px;
+    height: ${height}px;
   `}
 `;
 
 const flex = css`
   display: flex;
+  overflow: hidden;
 `;
 
 function slide(arr, direction, padding) {
@@ -32,13 +31,25 @@ function slide(arr, direction, padding) {
 }
 
 function applyTransition(el, width, padding) {
-  el.animate([
-    { transform: `translateX(${width * padding}px)` },
-    { transform: 'translateX(0)' },
-  ], {
-    duration: 300,
+  const transition = [
+    { transform: `translate3D(${width * padding}px, 0, 0)` },
+    { transform: 'translate3D(0, 0, 0)' },
+  ];
+
+  el.animate(transition, {
+    duration: 500,
     easing: 'cubic-bezier(0,0,0.32,1)',
   });
+}
+
+function Clip({
+  value, cb, width, height,
+}) {
+  useEffect(() => () => {
+    console.log('unmounted');
+  }, []);
+
+  return <div value={value} width={width} height={height} onClick={cb} css={clipStyle}>{value}</div>;
 }
 
 function Player() {
@@ -49,6 +60,7 @@ function Player() {
   const [clips, setClips] = useState(elements.slice(0, 5));
   const [direction, setDirection] = useState();
   const [clicked, setClicked] = useState();
+  const indexOfClicked = clips.indexOf(clicked);
   const [padding, setPadding] = useState(0);
   const ref = useRef();
 
@@ -56,24 +68,18 @@ function Player() {
     setClicked(el);
   };
 
-  console.log('clicked', clicked);
-  console.log('indexOf', clips.indexOf(clicked));
-  console.log('padding', padding);
-
   useEffect(() => {
-    if (clicked === undefined) {
+    if (clicked === undefined || indexOfClicked === 2) {
       return;
     }
 
-    if (clips.indexOf(clicked) > 2) {
+    if (indexOfClicked > 2) {
       setDirection('left');
-    } else if (clips.indexOf(clicked) < 2) {
+    } else if (indexOfClicked < 2) {
       setDirection('right');
-    } else {
-      return;
     }
 
-    setPadding(paddings[clips.indexOf(clicked)]);
+    setPadding(paddings[indexOfClicked]);
   }, [clicked]);
 
   useEffect(() => {
@@ -81,7 +87,10 @@ function Player() {
       return;
     }
 
-    setClips((prev) => slide([...prev], direction, paddings[clips.indexOf(clicked)]));
+    setClips((prev) => slide([...prev], direction, paddings[indexOfClicked]));
+  }, [direction, padding, indexOfClicked]);
+
+  useEffect(() => {
     Array.prototype.forEach.call(ref.current.children, (el) => {
       if (direction === 'left') {
         applyTransition(el, WIDTH, padding);
@@ -89,11 +98,11 @@ function Player() {
         applyTransition(el, WIDTH, -padding);
       }
     });
-  }, [direction, padding]);
+  }, [clicked, direction]);
 
   return (
-    <div css={flex} ref={ref} padding={padding} WIDTH={WIDTH}>
-      {clips.map((el) => <div key={el} value={el} WIDTH={WIDTH} HEIGHT={HEIGHT} onClick={slideCB(el)} css={clipStyle}>{el}</div>)}
+    <div css={flex} ref={ref} padding={padding}>
+      {clips.map((el, i) => <Clip key={el} value={el} width={WIDTH} height={HEIGHT} direction={direction} padding={padding} index={i} cb={slideCB(el)} />)}
     </div>
   );
 }
