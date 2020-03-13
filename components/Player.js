@@ -23,9 +23,6 @@ const clipStyle = css`
   }
 }
 `;
-// border: 1px solid ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
-
-// scale(${scale}, ${scale}
 
 const flex = css`
   display: flex;
@@ -57,8 +54,8 @@ function Clip({
 }
 
 function Player() {
-  const WIDTH = 600;
-  const HEIGHT = 300;
+  const WIDTH = 800;
+  const HEIGHT = 500;
   const paddings = [2, 1, 0, 1, 2];
 
   const [clips, setClips] = useState(elements.slice(0, 5));
@@ -79,16 +76,17 @@ function Player() {
     const result = slide(clips, direction, paddings[indexOfClicked]);
 
     await Promise.all(Array.prototype.map.call(ref.current.children, (elem, index) => {
-      const init = WIDTH * -(2 - index) * 0.25;
-      const final = WIDTH * -(2 - result.indexOf(clips[index])) * 0.25;
-      const localScale = 1 - (paddings[index] * 0.15);
-      const localNextScale = 1 - (paddings[result.indexOf(clips[index])] * 0.15);
+      const nextIndex = result.indexOf(clips[index]);
+      const initPos = WIDTH * -(2 - index) * 0.25;
+      const nextPos = WIDTH * -(2 - nextIndex) * 0.25;
+      const initScale = 1 - (paddings[index] * 0.15);
+      const nextScale = 1 - (paddings[nextIndex] * 0.15);
 
       const player = elem.animate([
-        { transform: `translateX(${init}px) scale(${localScale}, ${localScale})` },
-        { transform: `translateX(${final}px) scale(${localNextScale}, ${localNextScale})` },
+        { transform: `translateX(${initPos}px) scale(${initScale}, ${initScale})` },
+        { transform: `translateX(${nextPos}px) scale(${nextScale}, ${nextScale})` },
       ], {
-        duration: 300,
+        duration: 150,
       });
 
       return new Promise((res) => player.addEventListener('finish', () => {
