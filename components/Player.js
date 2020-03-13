@@ -14,24 +14,21 @@ const clipStyle = css`
     const scale = 1 - (padding * 0.15);
 
     return css`
-      border: 3px solid ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
+      background-color: ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
       z-index: ${2 - padding};
       width: ${width}px;
       height: ${height}px;
-      transform: scale(${scale}, ${scale});
       transform: translateX(${width * -direction * 0.25}px) scale(${scale}, ${scale});
-
-      &.translate-x {
-        transform: translateX(${width * direction * 0.25}px) scale(${scale + 0.10}, ${scale + 0.10});
-      }
     `;
   }
 }
 `;
+// border: 1px solid ${`#${((1 << 24) * ((value + 1) / 10) | 0).toString(16)}`};
+
+// scale(${scale}, ${scale}
 
 const flex = css`
   display: flex;
-  border: 1px red solid;
   position: relative;
 
   ${({ width }) => css`
@@ -67,7 +64,7 @@ function Player() {
   const [clips, setClips] = useState(elements.slice(0, 5));
   const ref = useRef();
 
-  const slideCB = (el, d, i) => ({ target }) => {
+  const slideCB = (el) => async () => {
     const indexOfClicked = clips.indexOf(el);
 
     if (indexOfClicked === 2) return;
@@ -79,28 +76,27 @@ function Player() {
       direction = 'right';
     }
 
-    const first = target.getBoundingClientRect();
+    const result = slide(clips, direction, paddings[indexOfClicked]);
 
-    target.classList.add('translate-x');
+    await Promise.all(Array.prototype.map.call(ref.current.children, (elem, index) => {
+      const init = WIDTH * -(2 - index) * 0.25;
+      const final = WIDTH * -(2 - result.indexOf(clips[index])) * 0.25;
+      const localScale = 1 - (paddings[index] * 0.15);
+      const localNextScale = 1 - (paddings[result.indexOf(clips[index])] * 0.15);
 
-    const last = target.getBoundingClientRect();
+      const player = elem.animate([
+        { transform: `translateX(${init}px) scale(${localScale}, ${localScale})` },
+        { transform: `translateX(${final}px) scale(${localNextScale}, ${localNextScale})` },
+      ], {
+        duration: 300,
+      });
 
-    const invert = first.left - last.left;
-    const deltaW = first.width / last.width;
-    const deltaH = first.height / last.height;
-    console.table({ first, last });
+      return new Promise((res) => player.addEventListener('finish', () => {
+        res();
+      }));
+    }));
 
-    const player = target.animate([
-      { transform: `translateX(${invert}px) scale(${deltaW}, ${deltaH})` },
-      { transform: 'translateX(0)' },
-    ], {
-      duration: 300,
-      easing: 'cubic-bezier(0,0,0.32,1)',
-    });
-
-    player.addEventListener('finish', () => {
-      setClips((prev) => slide([...prev], direction, paddings[indexOfClicked]));
-    });
+    setClips(result);
   };
 
   return (
