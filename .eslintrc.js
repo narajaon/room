@@ -22,10 +22,6 @@ module.exports = {
   "rules": {
     "prettier/prettier": "warn",
     "no-bitwise": ["error", { "allow": ["<<", "|"] }],
-    "indent": [
-      "warn",
-      2
-    ],
     "no-unused-vars": ["warn", { "vars": "all" }],
     "quotes": [
       "error",

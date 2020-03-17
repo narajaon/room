@@ -16,15 +16,13 @@ const clipStyle = css`
 
     return css`
       background-color: ${`#${(((1 << 24) * ((value + 1) / 10)) | 0).toString(
-    16
-  )}`};
-      ${''}
+        16
+      )}`};
       z-index: ${2 - padding};
       width: ${width}px;
       height: ${height}px;
-      transform: translateX(${width *
-        -direction *
-        mult}px) scale(${scale}, ${scale});
+      transform: translateX(${width * -direction * mult}px)
+        scale(${scale}, ${scale});
     `;
   }}
 `;
