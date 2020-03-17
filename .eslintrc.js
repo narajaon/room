@@ -7,10 +7,12 @@ module.exports = {
     }
   },
   "parser": "babel-eslint",
+  "plugins": ["prettier"],
   extends: [
     "airbnb-base",
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
   ],
   "env": {
     "browser": true,
@@ -18,6 +20,7 @@ module.exports = {
     "jest": true
   },
   "rules": {
+    "prettier/prettier": "warn",
     "no-bitwise": ["error", { "allow": ["<<", "|"] }],
     "indent": [
       "warn",

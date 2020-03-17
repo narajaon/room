@@ -9,9 +9,10 @@ export default class MyDocument extends Document {
 
     try {
       // eslint-disable-next-line no-param-reassign
-      ctx.renderPage = () => originalRenderPage({
-        enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
-      });
+      ctx.renderPage = () =>
+        originalRenderPage({
+          enhanceApp: App => props => sheet.collectStyles(<App {...props} />)
+        });
 
       const initialProps = await Document.getInitialProps(ctx);
 
@@ -22,7 +23,7 @@ export default class MyDocument extends Document {
             {initialProps.styles}
             {sheet.getStyleElement()}
           </>
-        ),
+        )
       };
     } finally {
       sheet.seal();

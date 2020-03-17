@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const express = require('express');
 const config = require('../config.json');
 
@@ -20,7 +21,7 @@ class Server {
       serverHandler(req, res);
     });
 
-    this.instance.listen(PORT, (err) => {
+    this.instance.listen(PORT, err => {
       if (err) throw err;
       console.log(`> Ready on http://localhost:${PORT}`);
     });

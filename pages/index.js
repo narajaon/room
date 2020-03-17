@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Player from '../components/Player';
 
+// eslint-disable-next-line react/prop-types
 function Index({ clips }) {
-  return (<Player />);
+  return <Player />;
 }
 
 // Index.getInitialProps = async ({ req }) => {

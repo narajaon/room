@@ -6,10 +6,13 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-  const server = new Server();
+app
+  .prepare()
+  .then(() => {
+    const server = new Server();
 
-  server.setup(handle);
-}).catch((err) => {
-  console.log(err);
-});
+    server.setup(handle);
+  })
+  .catch(err => {
+    console.log(err);
+  });
