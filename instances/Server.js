@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const express = require('express');
-const config = require('../config.json');
+// const config = require('../config.json');
 
 const PORT = process.env.NODE_ENV || 3000;
 
@@ -11,8 +11,8 @@ class Server {
 
   setup(serverHandler) {
     this.instance.use(/\//, (req, res, next) => {
-      req.api_url = config.api_url;
-      req.client_id = config.client_id;
+      // req.api_url = config.api_url;
+      // req.client_id = config.client_id;
 
       next();
     });
