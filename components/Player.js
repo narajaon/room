@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { css } from 'styled-components';
 
 const elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -49,13 +49,6 @@ function slide(arr, direction, padding) {
 }
 
 function Clip({ value, cb, width, height, padding, direction, mult }) {
-  useEffect(
-    () => () => {
-      console.log('unmounted');
-    },
-    []
-  );
-
   return (
     <div
       value={value}
