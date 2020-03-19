@@ -121,6 +121,7 @@ function slideCB(el, clips, ref, cb) {
         return new Promise(res =>
           player.addEventListener('finish', () => {
             res();
+            player.removeEventListener('finish', () => null);
           })
         );
       })
