@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { css } from 'styled-components';
 
 function Clip({ clip, width, height, isMain, cb }) {
@@ -6,10 +6,8 @@ function Clip({ clip, width, height, isMain, cb }) {
     let timeOutId;
     if (isMain && cb) {
       timeOutId = setTimeout(() => {
-        console.log(clip.duration);
-
         cb();
-      }, clip.duration * 1000 + 1000);
+      }, clip.duration * 1000 + 1500);
     }
 
     return () => {
