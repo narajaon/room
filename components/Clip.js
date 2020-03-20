@@ -1,27 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { css } from 'styled-components';
 
 function Clip({ clip, width, height, isMain }) {
-  const iframeRef = useRef();
-
-  useEffect(() => {
-    if (isMain) {
-      iframeRef.current.addEventListener('load', () => {
-        console.log('LOADED');
-        iframeRef.current.removeEventListener('load', () => null);
-      });
-    }
-  }, [clip]);
-
   return (
     <div
       css={css`
-        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+        height: 100%;
+        width: 100%;
       `}
     >
       {isMain ? (
         <iframe
-          ref={iframeRef}
           src={clip.embed_url}
           height={height}
           width={width}
@@ -34,8 +27,7 @@ function Clip({ clip, width, height, isMain }) {
         <img
           src={clip.thumbnail_url}
           css={css`
-            height: 100%;
-            width: ${width};
+            width: 100%;
           `}
         />
       )}

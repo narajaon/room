@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import Clip from './Clip';
 
-const WIDTH = 800;
-const HEIGHT = 300;
+const HEIGHT = 500;
+const WIDTH = HEIGHT * 1.77;
 const MULT = 0.3;
 const paddings = [2, 1, 0, 1, 2];
 
@@ -11,13 +11,11 @@ const Container = styled.div`
   position: absolute;
   box-shadow: -1px 6px 16px -6px rgba(0, 0, 0, 0.75);
 
-  ${({ value, padding, direction }) => {
+  ${({ padding, direction }) => {
     const scale = 1 - padding * 0.15;
 
     return css`
-      background-color: ${`#${(((1 << 24) * ((value + 1) / 10)) | 0).toString(
-        16
-      )}`};
+      background-color: black;
       z-index: ${2 - padding};
       width: ${WIDTH}px;
       height: ${HEIGHT}px;
@@ -118,8 +116,6 @@ function slideCB(id, clips, ref, cb) {
 }
 
 function Player({ videos }) {
-  console.log(videos);
-
   const [clips, setClips] = useState(videos.slice(0, 5));
   const ref = useRef();
 
@@ -134,7 +130,6 @@ function Player({ videos }) {
         {clips.map((clip, i) => (
           <Container
             key={clip.embed_url}
-            value={clip.embed_url}
             padding={paddings[i]}
             direction={2 - i}
             onClick={slideCB(clip.embed_url, clips, ref, setClips)}
