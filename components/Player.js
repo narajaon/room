@@ -1,17 +1,17 @@
 import React, { useState, useRef } from 'react';
-import { css } from 'styled-components';
+import styled, { css } from 'styled-components';
+import Clip from './Clip';
 
-const elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const WIDTH = 800;
 const HEIGHT = 300;
 const MULT = 0.3;
 const paddings = [2, 1, 0, 1, 2];
 
-const clipStyle = css`
+const Container = styled.div`
   position: absolute;
   box-shadow: -1px 6px 16px -6px rgba(0, 0, 0, 0.75);
 
-  ${({ value, width, height, padding, direction, mult }) => {
+  ${({ value, padding, direction }) => {
     const scale = 1 - padding * 0.15;
 
     return css`
@@ -19,9 +19,9 @@ const clipStyle = css`
         16
       )}`};
       z-index: ${2 - padding};
-      width: ${width}px;
-      height: ${height}px;
-      transform: translateX(${width * -direction * mult}px)
+      width: ${WIDTH}px;
+      height: ${HEIGHT}px;
+      transform: translateX(${WIDTH * -direction * MULT}px)
         scale(${scale}, ${scale});
     `;
   }}
@@ -48,28 +48,14 @@ function slide(arr, direction, padding) {
   return arr.slice(padding).concat(arr.slice(0, padding));
 }
 
-function Clip({ value, cb, width, height, padding, direction, mult }) {
-  return (
-    <div
-      value={value}
-      direction={direction}
-      mult={mult}
-      padding={padding}
-      width={width}
-      height={height}
-      onClick={cb}
-      css={clipStyle}
-    >
-      value: {value} padding: {padding}
-    </div>
-  );
-}
+function slideCB(id, clips, ref, cb) {
+  const byVideoId = videoId => clip => videoId === clip.embed_url;
 
-function slideCB(el, clips, ref, cb) {
   return async () => {
-    const indexOfClicked = clips.indexOf(el);
-
-    if (indexOfClicked === 2) return;
+    const indexOfClicked = clips.findIndex(byVideoId(id));
+    if (indexOfClicked === 2) {
+      return;
+    }
 
     let direction;
     if (indexOfClicked > 2) {
@@ -131,8 +117,10 @@ function slideCB(el, clips, ref, cb) {
   };
 }
 
-function Player() {
-  const [clips, setClips] = useState(elements.slice(0, 5));
+function Player({ videos }) {
+  console.log(videos);
+
+  const [clips, setClips] = useState(videos.slice(0, 5));
   const ref = useRef();
 
   return (
@@ -143,17 +131,16 @@ function Player() {
       `}
     >
       <div css={flex} ref={ref} height={HEIGHT} width={WIDTH}>
-        {clips.map((el, i) => (
-          <Clip
-            key={el}
-            value={el}
-            width={WIDTH}
-            height={HEIGHT}
+        {clips.map((clip, i) => (
+          <Container
+            key={clip.embed_url}
+            value={clip.embed_url}
             padding={paddings[i]}
             direction={2 - i}
-            mult={MULT}
-            cb={slideCB(el, clips, ref, setClips)}
-          />
+            onClick={slideCB(clip.embed_url, clips, ref, setClips)}
+          >
+            <Clip clip={clip} width={WIDTH} height={HEIGHT} isMain={i === 2} />
+          </Container>
         ))}
       </div>
     </div>
