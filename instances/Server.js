@@ -12,6 +12,7 @@ class Server {
   setup(serverHandler) {
     this.instance.use(/\//, (req, res, next) => {
       req.api_url = config.api_url;
+      req.api_url_old = config.api_url_old;
       req.client_id = config.client_id;
 
       next();

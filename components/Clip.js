@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { css } from 'styled-components';
 
-function Clip({ clip, width, height, isMain }) {
+function Clip({ clip, width, height, isMain, cb }) {
+  useEffect(() => {
+    let timeOutId;
+    if (isMain && cb) {
+      timeOutId = setTimeout(() => {
+        console.log(clip.duration);
+
+        cb();
+      }, clip.duration * 1000 + 1000);
+    }
+
+    return () => {
+      if (timeOutId) {
+        clearTimeout(timeOutId);
+      }
+    };
+  }, [clip, isMain]);
+
   return (
     <div
       css={css`
@@ -25,7 +42,7 @@ function Clip({ clip, width, height, isMain }) {
         />
       ) : (
         <img
-          src={clip.thumbnail_url}
+          src={clip.thumbnails.medium}
           css={css`
             width: 100%;
           `}

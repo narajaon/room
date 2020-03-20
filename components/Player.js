@@ -46,11 +46,11 @@ function slide(arr, direction, padding) {
   return arr.slice(padding).concat(arr.slice(0, padding));
 }
 
-function slideCB(id, clips, ref, cb) {
-  const byVideoId = videoId => clip => videoId === clip.embed_url;
+function slideCB(slug, clips, ref, cb) {
+  const byVideoSlug = videoSlug => clip => videoSlug === clip.slug;
 
   return async () => {
-    const indexOfClicked = clips.findIndex(byVideoId(id));
+    const indexOfClicked = clips.findIndex(byVideoSlug(slug));
     if (indexOfClicked === 2) {
       return;
     }
@@ -115,8 +115,14 @@ function slideCB(id, clips, ref, cb) {
   };
 }
 
+function playNext(clips, ref, cb) {
+  const { slug: nextClipSlug } = clips[3];
+
+  return slideCB(nextClipSlug, clips, ref, cb);
+}
+
 function Player({ videos }) {
-  const [clips, setClips] = useState(videos.slice(0, 5));
+  const [clips, setClips] = useState(videos);
   const ref = useRef();
 
   return (
@@ -129,12 +135,18 @@ function Player({ videos }) {
       <div css={flex} ref={ref} height={HEIGHT} width={WIDTH}>
         {clips.map((clip, i) => (
           <Container
-            key={clip.embed_url}
+            key={clip.slug}
             padding={paddings[i]}
             direction={2 - i}
-            onClick={slideCB(clip.embed_url, clips, ref, setClips)}
+            onClick={slideCB(clip.slug, clips, ref, setClips)}
           >
-            <Clip clip={clip} width={WIDTH} height={HEIGHT} isMain={i === 2} />
+            <Clip
+              clip={clip}
+              width={WIDTH}
+              height={HEIGHT}
+              isMain={i === 2}
+              cb={playNext(clips, ref, setClips)}
+            />
           </Container>
         ))}
       </div>
