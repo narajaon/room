@@ -1,22 +1,30 @@
-import React, { useEffect, useRef } from 'react';
-import { css } from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
-function Clip({ clip, width, height, isMain, cb }) {
-  useEffect(() => {
-    let timeOutId;
-    if (isMain && cb) {
-      timeOutId = setTimeout(() => {
-        cb();
-      }, clip.duration * 1000 + 1500);
-    }
+const Overlay = styled.div`
+  width: 100%;
+  height: 100%;
+  background: rgba(215, 104, 135, 0.4);
+  position: absolute;
+`;
 
-    return () => {
-      if (timeOutId) {
-        clearTimeout(timeOutId);
-      }
-    };
-  }, [clip, isMain]);
+const pause = (id, start) => {
+  clearTimeout(id);
 
+  return { remaining: Date.now() - start };
+};
+
+const start = (id, remaining, cb) => {
+  clearTimeout(id);
+
+  return {
+    start: Date.now(),
+    id: setTimeout(cb, remaining),
+    remaining
+  };
+};
+
+function Clip({ clip, width, height, isMain, cb, autoplay }) {
   return (
     <div
       css={css`
@@ -46,6 +54,7 @@ function Clip({ clip, width, height, isMain, cb }) {
           `}
         />
       )}
+      {autoplay && <Overlay />}
     </div>
   );
 }

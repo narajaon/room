@@ -1,28 +1,12 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import axios from 'axios';
-import Player from '../components/Player';
+import Player from '../components/Player/Player';
+import getRandom from '../lib/getRandomSubArray';
 
-// eslint-disable-next-line react/prop-types
-
-function getRandom(arr, n) {
-  const result = new Array(n);
-  let len = arr.length;
-  const taken = new Array(len);
-  if (n > len)
-    throw new RangeError('getRandom: more elements taken than available');
-  while (n--) {
-    const x = Math.floor(Math.random() * len);
-    result[n] = arr[x in taken ? taken[x] : x];
-    taken[x] = --len in taken ? taken[len] : len;
-  }
-
-  return result;
-}
-
-function Index({ clips, error }) {
+function Index({ videos, error }) {
   if (error) return null;
 
-  return <Player videos={clips} />;
+  return <Player videos={videos} />;
 }
 
 Index.getInitialProps = async ({ req }) => {
@@ -50,7 +34,7 @@ Index.getInitialProps = async ({ req }) => {
 
     const clips = res.reduce((acc, { data }) => [...acc, ...data.clips], []);
 
-    return { clips: getRandom(clips, 5) };
+    return { videos: getRandom(clips, 5) };
   } catch (error) {
     console.log(error.message);
   }
