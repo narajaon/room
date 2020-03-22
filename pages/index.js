@@ -1,12 +1,17 @@
 import React from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 import Player from '../components/Player/Player';
 import getRandom from '../lib/getRandomSubArray';
 
 function Index({ videos, error }) {
   if (error) return null;
 
-  return <Player videos={videos} />;
+  return (
+    <Index.Container>
+      <Player videos={videos} />;
+    </Index.Container>
+  );
 }
 
 Index.getInitialProps = async ({ req }) => {
@@ -41,5 +46,10 @@ Index.getInitialProps = async ({ req }) => {
 
   return { error: true };
 };
+
+Index.Container = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 export default Index;

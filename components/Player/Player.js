@@ -1,10 +1,30 @@
-import React, { useState, useRef, useContext, createContext } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import Clip from './Clip';
 import { WIDTH, HEIGHT, MULT, paddings } from './const';
-import { clipClickHandler, playNext } from './slide';
+import { clipClickHandler } from './slide';
 
-const Container = styled.div`
+function Player({ videos }) {
+  const [clips, setClips] = useState(videos);
+  const ref = useRef();
+
+  return (
+    <Player.Container ref={ref} height={HEIGHT} width={WIDTH}>
+      {clips.map((clip, i) => (
+        <Player.ClipContainer
+          key={clip.slug}
+          padding={paddings[i]}
+          direction={2 - i}
+          onClick={clipClickHandler(clip.slug, clips, ref, setClips)}
+        >
+          <Clip clip={clip} width={WIDTH} height={HEIGHT} isMain={i === 2} />
+        </Player.ClipContainer>
+      ))}
+    </Player.Container>
+  );
+}
+
+Player.ClipContainer = styled.div`
   position: absolute;
   box-shadow: -1px 6px 16px -6px rgba(0, 0, 0, 0.75);
 
@@ -22,51 +42,10 @@ const Container = styled.div`
   }}
 `;
 
-const flex = css`
+Player.Container = styled.div`
   display: flex;
   position: relative;
-
-  ${({ width }) => css`
-    right: ${width / 2}px;
-  `}
+  right: ${WIDTH / 2}px;
 `;
-
-function Player({ videos }) {
-  const [autoplay, setAutoplay] = useState(true);
-  const [clips, setClips] = useState(videos);
-  const ref = useRef();
-
-  return (
-    <div
-      css={css`
-        display: flex;
-        justify-content: center;
-      `}
-    >
-      <div css={flex} ref={ref} height={HEIGHT} width={WIDTH}>
-        {clips.map((clip, i) => (
-          <Container
-            key={clip.slug}
-            padding={paddings[i]}
-            direction={2 - i}
-            onMouseEnter={() => setAutoplay(false)}
-            onMouseLeave={() => setAutoplay(true)}
-            onClick={clipClickHandler(clip.slug, clips, ref, setClips)}
-          >
-            <Clip
-              clip={clip}
-              width={WIDTH}
-              height={HEIGHT}
-              isMain={i === 2}
-              cb={playNext(clips, ref, setClips)}
-              autoplay={autoplay}
-            />
-          </Container>
-        ))}
-      </div>
-      <span>{autoplay}</span>
-    </div>
-  );
-}
 
 export default Player;

@@ -1,25 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-const Overlay = styled.div`
-  width: 100%;
-  height: 100%;
-  background: rgba(215, 104, 135, 0.4);
-  position: absolute;
-`;
-
-function Clip({ clip, width, height, isMain, cb, autoplay }) {
+function Clip({ clip, width, height, isMain }) {
   return (
-    <div
-      css={css`
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: black;
-        height: 100%;
-        width: 100%;
-      `}
-    >
+    <Clip.Container>
       {isMain ? (
         <iframe
           src={clip.embed_url}
@@ -38,9 +22,17 @@ function Clip({ clip, width, height, isMain, cb, autoplay }) {
           `}
         />
       )}
-      {autoplay && <Overlay />}
-    </div>
+    </Clip.Container>
   );
 }
+
+Clip.Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+`;
 
 export default Clip;
