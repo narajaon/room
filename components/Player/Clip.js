@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Overlay = styled.div`
@@ -7,22 +7,6 @@ const Overlay = styled.div`
   background: rgba(215, 104, 135, 0.4);
   position: absolute;
 `;
-
-const pause = (id, start) => {
-  clearTimeout(id);
-
-  return { remaining: Date.now() - start };
-};
-
-const start = (id, remaining, cb) => {
-  clearTimeout(id);
-
-  return {
-    start: Date.now(),
-    id: setTimeout(cb, remaining),
-    remaining
-  };
-};
 
 function Clip({ clip, width, height, isMain, cb, autoplay }) {
   return (

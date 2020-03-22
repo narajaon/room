@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import Player from '../components/Player/Player';
 import getRandom from '../lib/getRandomSubArray';
