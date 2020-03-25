@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const express = require('express');
+const secret = require('../secret.json');
 const config = require('../config.json');
 
 const PORT = process.env.NODE_ENV || 3000;
@@ -13,7 +14,7 @@ class Server {
     this.instance.use(/\//, (req, res, next) => {
       req.api_url = config.api_url;
       req.api_url_old = config.api_url_old;
-      req.client_id = config.client_id;
+      req.client_id = secret.client_id;
 
       next();
     });

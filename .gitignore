@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # app config
-config.json
+secret.json
