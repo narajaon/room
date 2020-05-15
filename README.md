@@ -12,3 +12,5 @@ As twitch needs both a client id and a client secret to make requests to its RES
   "client_secret": <my client secret>
 }
 ```
+
+Then just run `npm run dev` and go to your `localhost:3000`
