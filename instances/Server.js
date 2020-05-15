@@ -15,6 +15,7 @@ class Server {
       req.api_url = config.api_url;
       req.api_url_old = config.api_url_old;
       req.client_id = secret.client_id;
+      req.client_secret = secret.client_secret;
 
       next();
     });

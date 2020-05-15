@@ -16,17 +16,24 @@ function Index({ videos, error }) {
 
 Index.getInitialProps = async ({ req }) => {
   try {
+    const { data: oAuth2 } = await axios.post(
+      `https://id.twitch.tv/oauth2/token?client_id=${req.client_id}&client_secret=${req.client_secret}&grant_type=client_credentials`
+    );
+
     const { data: games } = await axios.get(
-      `${req.api_url}games/top?first=15`,
+      `${req.api_url}/games/top?first=15`,
       {
-        headers: { 'Client-ID': req.client_id }
+        headers: {
+          'Client-ID': req.client_id,
+          Authorization: `Bearer ${oAuth2.access_token}`
+        }
       }
     );
 
     const res = await Promise.all(
       games.data.map(({ name }) =>
         axios.get(
-          `${req.api_url_old}clips/top?game=${name}&limit=10&trending=true`,
+          `${req.api_url_old}/clips/top?game=${name}&limit=10&trending=true`,
           {
             headers: {
               'Client-ID': req.client_id,

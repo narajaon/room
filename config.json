@@ -1,4 +1,4 @@
 {
-  "api_url": "https://api.twitch.tv/helix/",
-  "api_url_old": "https://api.twitch.tv/kraken/"
+  "api_url": "https://api.twitch.tv/helix",
+  "api_url_old": "https://api.twitch.tv/kraken"
 }
