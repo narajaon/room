@@ -1,14 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { WIDTH, HEIGHT } from './const';
 
-function Clip({ clip, width, height, isMain }) {
+function Clip({ clip, isMain }) {
   return (
     <Clip.Container>
       {isMain ? (
         <iframe
           src={clip.embed_url}
-          height={height}
-          width={width}
+          height={HEIGHT}
+          width={WIDTH}
           frameBorder="0"
           scrolling="no"
           allowFullScreen={false}

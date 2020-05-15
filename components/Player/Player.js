@@ -9,7 +9,7 @@ function Player({ videos }) {
   const ref = useRef();
 
   return (
-    <Player.Container ref={ref} height={HEIGHT} width={WIDTH}>
+    <Player.Container ref={ref}>
       {clips.map((clip, i) => (
         <Player.ClipContainer
           key={clip.slug}
@@ -17,7 +17,7 @@ function Player({ videos }) {
           direction={2 - i}
           onClick={clipClickHandler(clip.slug, clips, ref, setClips)}
         >
-          <Clip clip={clip} width={WIDTH} height={HEIGHT} isMain={i === 2} />
+          <Clip clip={clip} isMain={i === 2} />
         </Player.ClipContainer>
       ))}
     </Player.Container>
